@@ -1,188 +1,412 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>برای نیتا</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --wine: #3a1420;
-    --wine-deep: #1c0910;
-    --ivory: #f6ece1;
-    --gold: #c9a267;
-    --gold-soft: #e2c48f;
-    --rose: #d98c96;
-    --ink: #2a1a16;
-  }
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Drum Picker">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دستیار تقویم iOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jalaali-js/dist/jalaali.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #050508;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-  *{ margin:0; padding:0; box-sizing:border-box; }
+        /* پس‌زمینه سیال (Liquid Background) */
+        .liquid-blob-1 {
+            position: fixed; top: -10%; right: -10%; width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(99,102,241,0.35) 0%, rgba(168,85,247,0.15) 60%, transparent 100%);
+            filter: blur(50px); border-radius: 50%; z-index: 0;
+            animation: float 9s ease-in-out infinite alternate;
+        }
+        .liquid-blob-2 {
+            position: fixed; bottom: -10%; left: -10%; width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, rgba(16,185,129,0.15) 60%, transparent 100%);
+            filter: blur(60px); border-radius: 50%; z-index: 0;
+            animation: float 12s ease-in-out infinite alternate-reverse;
+        }
 
-  html, body{
-    width:100%;
-    min-height:100%;
-  }
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-25px, 25px) scale(1.1); }
+        }
 
-  body{
-    font-family: 'Vazirmatn', sans-serif;
-    background:
-      radial-gradient(ellipse at 15% 0%, rgba(201,162,103,0.14), transparent 55%),
-      radial-gradient(ellipse at 90% 100%, rgba(217,140,150,0.12), transparent 55%),
-      linear-gradient(160deg, var(--wine) 0%, var(--wine-deep) 100%);
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:40px 18px;
-  }
+        /* افکت شیشه‌ای iOS (Liquid Glass) */
+        .ios-glass {
+            background: rgba(28, 28, 35, 0.55);
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
 
-  /* gentle floating hearts in the background, no interaction needed */
-  .bg-heart{
-    position:fixed;
-    bottom:-40px;
-    color: var(--gold-soft);
-    opacity:.18;
-    font-size:18px;
-    pointer-events:none;
-    animation: rise linear infinite;
-    z-index:0;
-  }
-  @keyframes rise{
-    to{ transform: translateY(-115vh) rotate(25deg); opacity:0; }
-  }
+        .ios-input {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            transition: all 0.25s ease;
+        }
+        .ios-input:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.35);
+            outline: none;
+        }
 
-  .card{
-    position:relative;
-    z-index:1;
-    width:100%;
-    max-width:600px;
-    background: linear-gradient(180deg, #fdf8f0, var(--ivory));
-    border-radius:14px;
-    padding:48px 34px 42px;
-    box-shadow: 0 30px 80px rgba(0,0,0,.5);
-    opacity:0;
-    transform: translateY(18px);
-    animation: appear .9s ease forwards;
-  }
+        .chip.active {
+            background: rgba(255, 255, 255, 0.92);
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.25);
+            border-color: transparent;
+        }
 
-  @keyframes appear{
-    to{ opacity:1; transform:translateY(0); }
-  }
+        select option { background-color: #18181b; color: #fff; }
 
-  .card::before{
-    content:"";
-    position:absolute;
-    top:14px; bottom:14px; right:14px; left:14px;
-    border:1px solid rgba(201,162,103,0.4);
-    border-radius:8px;
-    pointer-events:none;
-  }
-
-  .eyebrow{
-    text-align:center;
-    color: var(--rose);
-    font-size:26px;
-    margin-bottom:6px;
-    letter-spacing:2px;
-  }
-
-  h1{
-    font-size:27px;
-    font-weight:700;
-    color: var(--wine);
-    margin-bottom:24px;
-    line-height:1.5;
-    text-align:right;
-  }
-
-  p{
-    font-size:17.5px;
-    line-height:2.1;
-    color: var(--ink);
-    margin-bottom:18px;
-    text-align:right;
-  }
-
-  p.emph{
-    color: var(--wine);
-    font-weight:600;
-    font-size:18.5px;
-  }
-
-  .heart-row{
-    display:flex;
-    justify-content:center;
-    gap:12px;
-    margin:28px 0 8px;
-  }
-  .heart-row span{
-    color: var(--rose);
-    font-size:20px;
-    opacity:.85;
-  }
-
-  .signature{
-    margin-top:26px;
-    text-align:left;
-    font-size:19px;
-    color: var(--wine);
-    font-weight:600;
-  }
-  .signature span{
-    display:block;
-    font-size:14px;
-    font-weight:400;
-    color:#8a6a5a;
-    margin-top:4px;
-  }
-
-  @media (max-width:480px){
-    .card{ padding:36px 22px 32px; }
-    h1{ font-size:23px; }
-    p{ font-size:16px; line-height:2; }
-  }
-
-  ::selection{ background: var(--gold-soft); color:var(--wine); }
-</style>
+        /* استایل چرخنده ساعت آیفون (iOS Wheel Picker) */
+        .wheel-wrapper {
+            position: relative;
+            height: 132px; /* 3 items * 44px */
+            overflow: hidden;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+        }
+        .wheel-highlight {
+            position: absolute;
+            top: 44px;
+            left: 6px;
+            right: 6px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            pointer-events: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .wheel-scroll {
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 44px 0;
+        }
+        .wheel-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .wheel-item {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            scroll-snap-align: center;
+            font-size: 20px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.35);
+            transition: all 0.15s ease;
+            user-select: none;
+            cursor: pointer;
+        }
+        .wheel-item.selected {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 700;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
-<body>
+<body class="text-zinc-100 min-h-screen flex items-center justify-center p-4 relative">
 
-<div class="card">
-  <div class="eyebrow">♥</div>
-  <h1>نیتای فرفری قشنگم</h1>
+    <div class="liquid-blob-1"></div>
+    <div class="liquid-blob-2"></div>
 
-  <p>نمی‌دونم از کجا شروع کنم، فقط می‌دونم دلم می‌خواست یه جای قشنگ، فقط برای گفتن یه چیز بسازم؛ اینکه چقدر دوستت دارم.</p>
+    <div class="w-full max-w-md ios-glass rounded-[34px] p-6 relative z-10">
+        <div class="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-4"></div>
+        <h1 class="text-lg font-bold mb-6 text-center text-white/95 tracking-wide">ثبت رویداد جدید</h1>
 
-  <p>هر روز که می‌گذره بیشتر می‌فهمم چقدر بودنت تو زندگیم بزرگترین اتفاقیه که برام افتاده. صدات، خنده‌ت، حتی اون لحظه‌هایی که فقط ساکتی و کنارتم، همه‌ش برام ارزش داره.</p>
+        <!-- ۱. عنوان رویداد -->
+        <div class="mb-5">
+            <label class="block text-xs text-white/60 mb-2 pr-1">۱. عنوان رویداد</label>
+            <input type="text" id="taskTitle" placeholder="مثلاً: تحویل تحقیق مبلمان..." class="w-full ios-input rounded-2xl p-3.5 text-sm placeholder-white/30">
+        </div>
 
-  <p class="emph">تو قشنگ‌ترین اتفاق زندگیمی و من عاشقتم، تا پای دارر.</p>
+        <!-- ۲. انتخاب روز -->
+        <div class="mb-5">
+            <label class="block text-xs text-white/60 mb-2 pr-1">۲. تاریخ رویداد</label>
+            <div class="grid grid-cols-4 gap-2 mb-3">
+                <button type="button" onclick="setDayOffset(0, this)" class="chip ios-input rounded-2xl py-2.5 text-xs">امروز</button>
+                <button type="button" onclick="setDayOffset(1, this)" class="chip active ios-input rounded-2xl py-2.5 text-xs">فردا</button>
+                <button type="button" onclick="setDayOffset(2, this)" class="chip ios-input rounded-2xl py-2.5 text-xs">پس‌فردا</button>
+                <button type="button" onclick="setDayOffset(7, this)" class="chip ios-input rounded-2xl py-2.5 text-xs">هفته بعد</button>
+            </div>
+            
+            <div class="ios-input rounded-2xl p-3">
+                <span class="block text-[11px] text-white/50 mb-2">یا انتخاب تاریخ دقیق شمسی:</span>
+                <div class="grid grid-cols-3 gap-2">
+                    <select id="jDay" onchange="onManualJalaliChange()" class="ios-input rounded-xl p-2 text-xs text-center cursor-pointer"></select>
+                    <select id="jMonth" onchange="onManualJalaliChange()" class="ios-input rounded-xl p-2 text-xs text-center cursor-pointer">
+                        <option value="1">فروردین</option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+                    </select>
+                    <select id="jYear" onchange="onManualJalaliChange()" class="ios-input rounded-xl p-2 text-xs text-center cursor-pointer"></select>
+                </div>
+            </div>
+        </div>
 
-  <p>قربون اون چشمات برم که هزار بار دنیامو قشنگ‌تر کردن. قربون دلت برم که همیشه جا داره برای من. هزار بار الهی قربونت برم، عزیزِ دلم.</p>
+        <!-- ۳. چرخنده ساعت مشابه آلارم آیفون -->
+        <div class="mb-5">
+            <label class="block text-xs text-white/60 mb-2 pr-1">۳. ساعت رویداد</label>
+            <div class="ios-input rounded-2xl p-2 wheel-wrapper" dir="ltr">
+                <div class="wheel-highlight"></div>
+                <div class="grid grid-cols-2 h-full relative z-10">
+                    <!-- ستون ساعت -->
+                    <div id="hourWheel" class="wheel-scroll"></div>
+                    <!-- ستون دقیقه -->
+                    <div id="minuteWheel" class="wheel-scroll"></div>
+                </div>
+                <!-- دو نقطه وسط ساعت -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none font-bold text-xl text-white pb-1">:</div>
+            </div>
+        </div>
 
-  <p>می‌خوام بدونی هر جا باشم، هر اتفاقی بیفته، تو همیشه یه گوشه از فکر و دلم جا داری. ممنونم که هستی، ممنونم که انتخابم کردی و من همیشه دوست دارم، ببخشید.</p>
+        <!-- ۴. یادآوری -->
+        <div class="mb-6">
+            <label class="block text-xs text-white/60 mb-2 pr-1">۴. زمان یادآوری در آیفون</label>
+            <select id="reminderSelect" class="w-full ios-input rounded-2xl p-3.5 text-xs cursor-pointer">
+                <option value="0">در لحظه رویداد</option>
+                <option value="15">۱۵ دقیقه قبل</option>
+                <option value="30">۳۰ دقیقه قبل</option>
+                <option value="60">۱ ساعت قبل</option>
+                <option value="120">۲ ساعت قبل</option>
+                <option value="360">۶ ساعت قبل</option>
+                <option value="720">۱۲ ساعت قبل</option>
+                <option value="1440" selected>۱ روز قبل</option>
+                <option value="2880">۲ روز قبل</option>
+                <option value="4320">۳ روز قبل</option>
+                <option value="10080">۱ هفته قبل</option>
+            </select>
+        </div>
 
-  <div class="heart-row"><span>♥</span><span>♥</span><span>♥</span></div>
+        <!-- دکمه بررسی -->
+        <button onclick="previewTask()" class="w-full bg-white/90 text-black font-bold rounded-2xl py-3.5 text-sm shadow-lg hover:bg-white transition active:scale-[0.98]">بررسی و ساخت رویداد</button>
 
-  <div class="signature">
-    دوستت دارم، همیشه.
-    <span>علی</span>
-  </div>
-</div>
+        <!-- باکس تاییدیه -->
+        <div id="confirmBox" class="hidden mt-5 ios-input rounded-2xl p-4 border border-white/20">
+            <div class="text-xs text-white/80 space-y-2 mb-4 leading-relaxed" id="previewText"></div>
+            <div class="grid grid-cols-2 gap-2.5">
+                <button onclick="downloadICS()" class="bg-emerald-400/90 text-black font-bold py-2.5 rounded-xl text-xs hover:bg-emerald-400 transition shadow-md">✅ افزودن به تقویم</button>
+                <button onclick="closeConfirm()" class="ios-input text-white/80 py-2.5 rounded-xl text-xs hover:bg-white/10 transition">❌ ویرایش</button>
+            </div>
+        </div>
+    </div>
 
-<script>
-  function spawnHeart(){
-    const h = document.createElement('div');
-    h.className = 'bg-heart';
-    h.textContent = '♥';
-    h.style.left = Math.random()*100 + 'vw';
-    h.style.animationDuration = (10 + Math.random()*8) + 's';
-    h.style.fontSize = (12 + Math.random()*14) + 'px';
-    document.body.appendChild(h);
-    setTimeout(()=> h.remove(), 19000);
-  }
-  setInterval(spawnHeart, 1200);
-</script>
+    <script>
+        let selectedGregorianDate = new Date();
+        let selectedHour = "10";
+        let selectedMinute = "00";
+        const ITEM_HEIGHT = 44;
 
+        function initTimeWheels() {
+            const hourWheel = document.getElementById('hourWheel');
+            const minuteWheel = document.getElementById('minuteWheel');
+
+            for (let h = 0; h < 24; h++) {
+                const val = String(h).padStart(2, '0');
+                hourWheel.innerHTML += `<div class="wheel-item" data-val="${val}" onclick="scrollToItem(this)">${val}</div>`;
+            }
+
+            for (let m = 0; m < 60; m++) {
+                const val = String(m).padStart(2, '0');
+                minuteWheel.innerHTML += `<div class="wheel-item" data-val="${val}" onclick="scrollToItem(this)">${val}</div>`;
+            }
+
+            setupWheelListener(hourWheel, (val) => { selectedHour = val; closeConfirm(); });
+            setupWheelListener(minuteWheel, (val) => { selectedMinute = val; closeConfirm(); });
+
+            // تنظیم پیش‌فرض روی ساعت 10:00
+            setTimeout(() => {
+                hourWheel.scrollTop = 10 * ITEM_HEIGHT;
+                minuteWheel.scrollTop = 0 * ITEM_HEIGHT;
+                updateWheelSelection(hourWheel, 10);
+                updateWheelSelection(minuteWheel, 0);
+            }, 50);
+        }
+
+        function scrollToItem(el) {
+            const parent = el.parentElement;
+            const index = Array.from(parent.children).indexOf(el);
+            parent.scrollTo({ top: index * ITEM_HEIGHT, behavior: 'smooth' });
+        }
+
+        function setupWheelListener(wheelElement, callback) {
+            let isScrolling;
+            wheelElement.addEventListener('scroll', () => {
+                const index = Math.round(wheelElement.scrollTop / ITEM_HEIGHT);
+                updateWheelSelection(wheelElement, index);
+
+                clearTimeout(isScrolling);
+                isScrolling = setTimeout(() => {
+                    const finalIndex = Math.round(wheelElement.scrollTop / ITEM_HEIGHT);
+                    const items = wheelElement.querySelectorAll('.wheel-item');
+                    if (items[finalIndex]) {
+                        callback(items[finalIndex].getAttribute('data-val'));
+                    }
+                }, 60);
+            });
+        }
+
+        function updateWheelSelection(wheelElement, activeIndex) {
+            const items = wheelElement.querySelectorAll('.wheel-item');
+            items.forEach((item, idx) => {
+                if (idx === activeIndex) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function initPickers() {
+            const daySelect = document.getElementById('jDay');
+            for (let i = 1; i <= 31; i++) {
+                daySelect.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+
+            const currentJYear = jalaali.toJalaali(new Date()).jy;
+            const yearSelect = document.getElementById('jYear');
+            for (let y = currentJYear; y <= currentJYear + 5; y++) {
+                yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+            }
+
+            const btnTomorrow = document.querySelectorAll('.chip')[1];
+            setDayOffset(1, btnTomorrow);
+            initTimeWheels();
+        }
+
+        function activateChip(btn) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+
+        function setDayOffset(days, btn) {
+            activateChip(btn);
+            selectedGregorianDate = new Date();
+            selectedGregorianDate.setDate(selectedGregorianDate.getDate() + days);
+            syncGregorianToJalaliDropdowns();
+            closeConfirm();
+        }
+
+        function syncGregorianToJalaliDropdowns() {
+            const jDate = jalaali.toJalaali(selectedGregorianDate);
+            document.getElementById('jYear').value = jDate.jy;
+            document.getElementById('jMonth').value = jDate.jm;
+            document.getElementById('jDay').value = jDate.jd;
+        }
+
+        function onManualJalaliChange() {
+            activateChip(null);
+            const jy = parseInt(document.getElementById('jYear').value);
+            const jm = parseInt(document.getElementById('jMonth').value);
+            let jd = parseInt(document.getElementById('jDay').value);
+
+            const maxDays = jalaali.jalaaliMonthLength(jy, jm);
+            if (jd > maxDays) {
+                jd = maxDays;
+                document.getElementById('jDay').value = jd;
+            }
+
+            const gDate = jalaali.toGregorian(jy, jm, jd);
+            selectedGregorianDate = new Date(gDate.gy, gDate.gm - 1, gDate.gd);
+            closeConfirm();
+        }
+
+        function previewTask() {
+            const title = document.getElementById('taskTitle').value.trim() || 'رویداد بدون عنوان';
+            const time = `${selectedHour}:${selectedMinute}`;
+            const reminderText = document.getElementById('reminderSelect').options[document.getElementById('reminderSelect').selectedIndex].text;
+
+            const jalaliFormatted = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(selectedGregorianDate);
+            
+            const yyyy = selectedGregorianDate.getFullYear();
+            const mm = String(selectedGregorianDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(selectedGregorianDate.getDate()).padStart(2, '0');
+            const gregorianFormatted = `${yyyy}-${mm}-${dd}`;
+
+            document.getElementById('previewText').innerHTML = `
+                <div>📌 <strong class="text-white">عنوان:</strong> ${title}</div>
+                <div>📅 <strong class="text-white">تاریخ شمسی:</strong> ${jalaliFormatted}</div>
+                <div>🗓 <strong class="text-white">معادل میلادی:</strong> ${gregorianFormatted}</div>
+                <div>⏰ <strong class="text-white">ساعت:</strong> ${time} <span class="text-white/50">(${reminderText})</span></div>
+            `;
+            document.getElementById('confirmBox').classList.remove('hidden');
+        }
+
+        function closeConfirm() {
+            document.getElementById('confirmBox').classList.add('hidden');
+        }
+
+        function downloadICS() {
+            const title = document.getElementById('taskTitle').value.trim() || 'رویداد جدید';
+            const alarmMinutes = parseInt(document.getElementById('reminderSelect').value);
+
+            const yyyy = selectedGregorianDate.getFullYear();
+            const mm = String(selectedGregorianDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(selectedGregorianDate.getDate()).padStart(2, '0');
+
+            const startStr = `${yyyy}${mm}${dd}T${selectedHour}${selectedMinute}00`;
+            const endHour = String((Number(selectedHour) + 1) % 24).padStart(2, '0');
+            const endStr = `${yyyy}${mm}${dd}T${endHour}${selectedMinute}00`;
+
+            const triggerStr = alarmMinutes === 0 ? "PT0M" : `-PT${alarmMinutes}M`;
+
+            const icsContent = [
+                "BEGIN:VCALENDAR",
+                "VERSION:2.0",
+                "PRODID:-//iOS Glass Calendar//FA",
+                "BEGIN:VEVENT",
+                `SUMMARY:${title}`,
+                `DTSTART:${startStr}`,
+                `DTEND:${endStr}`,
+                "DESCRIPTION:ثبت شده با دستیار تقویم شخصی",
+                "BEGIN:VALARM",
+                `TRIGGER:${triggerStr}`,
+                "ACTION:DISPLAY",
+                "DESCRIPTION:یادآوری رویداد",
+                "END:VALARM",
+                "END:VEVENT",
+                "END:VCALENDAR"
+            ].join("\r\n");
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${title}.ics`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            closeConfirm();
+        }
+
+        initPickers();
+    </script>
 </body>
 </html>

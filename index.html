@@ -134,13 +134,13 @@
 
         <!-- ۱. عنوان رویداد -->
         <div class="mb-5">
-            <label class="block text-xs text-white/60 mb-2 pr-1">۱. عنوان رویداد</label>
-            <input type="text" id="taskTitle" placeholder="مثلاً: تحویل تحقیق مبلمان..." class="w-full ios-input rounded-2xl p-3.5 text-sm placeholder-white/30">
+            <label class="block text-xs text-white/60 mb-2 pr-1">۱. عنوان </label>
+            <input type="text" id="taskTitle" placeholder="" class="w-full ios-input rounded-2xl p-3.5 text-sm placeholder-white/30">
         </div>
 
         <!-- ۲. انتخاب روز -->
         <div class="mb-5">
-            <label class="block text-xs text-white/60 mb-2 pr-1">۲. تاریخ رویداد</label>
+            <label class="block text-xs text-white/60 mb-2 pr-1">۲. تاریخ </label>
             <div class="grid grid-cols-4 gap-2 mb-3">
                 <button type="button" onclick="setDayOffset(0, this)" class="chip ios-input rounded-2xl py-2.5 text-xs">امروز</button>
                 <button type="button" onclick="setDayOffset(1, this)" class="chip active ios-input rounded-2xl py-2.5 text-xs">فردا</button>
@@ -149,7 +149,7 @@
             </div>
             
             <div class="ios-input rounded-2xl p-3">
-                <span class="block text-[11px] text-white/50 mb-2">یا انتخاب تاریخ دقیق شمسی:</span>
+                <span class="block text-[11px] text-white/50 mb-2"> انتخاب دستی :</span>
                 <div class="grid grid-cols-3 gap-2">
                     <select id="jDay" onchange="onManualJalaliChange()" class="ios-input rounded-xl p-2 text-xs text-center cursor-pointer"></select>
                     <select id="jMonth" onchange="onManualJalaliChange()" class="ios-input rounded-xl p-2 text-xs text-center cursor-pointer">
@@ -173,7 +173,7 @@
 
         <!-- ۳. چرخنده ساعت مشابه آلارم آیفون -->
         <div class="mb-5">
-            <label class="block text-xs text-white/60 mb-2 pr-1">۳. ساعت رویداد</label>
+            <label class="block text-xs text-white/60 mb-2 pr-1">۳. ساعت </label>
             <div class="ios-input rounded-2xl p-2 wheel-wrapper" dir="ltr">
                 <div class="wheel-highlight"></div>
                 <div class="grid grid-cols-2 h-full relative z-10">
@@ -189,7 +189,7 @@
 
         <!-- ۴. یادآوری -->
         <div class="mb-6">
-            <label class="block text-xs text-white/60 mb-2 pr-1">۴. زمان یادآوری در آیفون</label>
+            <label class="block text-xs text-white/60 mb-2 pr-1">۴. زمان یادآوری  </label>
             <select id="reminderSelect" class="w-full ios-input rounded-2xl p-3.5 text-xs cursor-pointer">
                 <option value="0">در لحظه رویداد</option>
                 <option value="15">۱۵ دقیقه قبل</option>
@@ -206,13 +206,13 @@
         </div>
 
         <!-- دکمه بررسی -->
-        <button onclick="previewTask()" class="w-full bg-white/90 text-black font-bold rounded-2xl py-3.5 text-sm shadow-lg hover:bg-white transition active:scale-[0.98]">بررسی و ساخت رویداد</button>
+        <button onclick="previewTask()" class="w-full bg-white/90 text-black font-bold rounded-2xl py-3.5 text-sm shadow-lg hover:bg-white transition active:scale-[0.98]">Submit</button>
 
         <!-- باکس تاییدیه -->
         <div id="confirmBox" class="hidden mt-5 ios-input rounded-2xl p-4 border border-white/20">
             <div class="text-xs text-white/80 space-y-2 mb-4 leading-relaxed" id="previewText"></div>
             <div class="grid grid-cols-2 gap-2.5">
-                <button onclick="downloadICS()" class="bg-emerald-400/90 text-black font-bold py-2.5 rounded-xl text-xs hover:bg-emerald-400 transition shadow-md">✅ افزودن به تقویم</button>
+                <button onclick="downloadICS()" class="bg-emerald-400/90 text-black font-bold py-2.5 rounded-xl text-xs hover:bg-emerald-400 transition shadow-md">✅افزودن  </button>
                 <button onclick="closeConfirm()" class="ios-input text-white/80 py-2.5 rounded-xl text-xs hover:bg-white/10 transition">❌ ویرایش</button>
             </div>
         </div>
@@ -389,7 +389,7 @@
                 "BEGIN:VALARM",
                 `TRIGGER:${triggerStr}`,
                 "ACTION:DISPLAY",
-                "DESCRIPTION:یادآوری رویداد",
+                "DESCRIPTION:یادآوری ",
                 "END:VALARM",
                 "END:VEVENT",
                 "END:VCALENDAR"
